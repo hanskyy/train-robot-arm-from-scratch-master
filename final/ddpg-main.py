@@ -1,4 +1,4 @@
-#from ddpg-rl import DDPG
+from ddpg-rl import DDPG
 import numpy as np
 import gym
 
@@ -22,6 +22,10 @@ min_action = env.action_space.low[0]
 # obs, curr_pos, goal_pos = state
 # exp = np.concatenate((obs, curr_pos, goal_pos))
 # exp.reshape((s_dim,))
+# obs_log = []
+# curr_pos_log = []
+# next_obs_log = []
+# next_curr_pos_log = []
 rl = DDPG(input_dims=s_dim, env=env, n_actions=a_dim)
 
 MAX_EPISODES = 5000
@@ -48,10 +52,10 @@ def train():
             next_exp = np.concatenate((next_obs, next_curr_pos, goal_pos))
             rl.store_transition(exp, action, reward, next_exp, done)
 
-
+            # start to learn once has fulfilled the memory
             if rl.memory_full:
-                # start to learn once has fulfilled the memory
                 rl.learn()
+
             # update the states
             curr_pos = next_curr_pos
             obs = next_obs
@@ -63,13 +67,13 @@ def train():
     rl.save()
 
 
-# def eval():
+def eval():
 
 
 
 
 
-# if ON_TRAIN:
-#     train()
-# else:
-#     eval()
+if ON_TRAIN:
+    train()
+else:
+    eval()

@@ -15,6 +15,7 @@ class DDPG(object):
         self.n_actions = n_actions
         self.max_action = env.action_space.high[0]
         self.min_action = env.action_space.low[0]
+        self.a_bound = env.action_space.high[1]
         self.mem_size = MEMORY_CAPACITY
         self.mem_cntr = 0
         self.input_dims = input_dims
@@ -50,6 +51,7 @@ class DDPG(object):
         self.soft_replace = [[tf.assign(ta, (1 - TAU) * ta + TAU * ea), tf.assign(tc, (1 - TAU) * tc + TAU * ec)]
                              for ta, ea, tc, ec in zip(self.at_params, self.ae_params, self.ct_params, self.ce_params)]
 
+        # minimize the td_error
         q_target = self.R + GAMMA * q_
         td_error = tf.losses.mean_squared_error(labels=q_target, predictions=q)
         self.ctrain = tf.train.AdamOptimizer(LR_C).minimize(td_error, var_list=self.ce_params)
@@ -67,6 +69,8 @@ class DDPG(object):
         self.reward_memory[index] = reward
         self.terminal_memory[index] = done
         self.mem_cntr +=1
+        if self.mem_cntr > MEMORY_CAPACITY:
+            self.memory_full = True
 
     def sample_buffer(self, batch_size):
         max_mem = min(self.mem_cntr, self.mem_size)
@@ -78,21 +82,30 @@ class DDPG(object):
         dones = self.terminal_memory[batch]
         return states, actions, rewards, _states, dones
 
-
-
-
-    """test code"""
     def _build_a(self, s, scope, trainable):
         with tf.variable_scope(scope):
             net = tf.layers.dense(s, 300, activation=tf.nn.relu, name='l1', trainable=trainable)
-            a = tf.layers.dense(net, self.a_dim, activation=tf.nn.tanh, name='a', trainable=trainable)
+            a = tf.layers.dense(net, self.n_actions, activation=tf.nn.tanh, name='a', trainable=trainable)
             return tf.multiply(a, self.a_bound, name='scaled_a')
 
     def _build_c(self, s, a, scope, trainable):
         with tf.variable_scope(scope):
             n_l1 = 300
-            w1_s = tf.get_variable('w1_s', [self.s_dim, n_l1], trainable=trainable)
-            w1_a = tf.get_variable('w1_a', [self.a_dim, n_l1], trainable=trainable)
+            w1_s = tf.get_variable('w1_s', [self.input_dims, n_l1], trainable=trainable)
+            w1_a = tf.get_variable('w1_a', [self.n_actions, n_l1], trainable=trainable)
             b1 = tf.get_variable('b1', [1, n_l1], trainable=trainable)
             net = tf.nn.relu(tf.matmul(s, w1_s) + tf.matmul(a, w1_a) + b1)
             return tf.layers.dense(net, 1, trainable=trainable)  # Q(s,a)
+
+    def save(self):
+        saver = tf.train.Saver()
+        saver.save(self.sess, './params', write_meta_graph=False)
+
+    def restore(self):
+        saver = tf.train.Saver()
+        saver.restore(self.sess, './params')
+
+    def choose_action(self):
+
+
+    def learn(self):
