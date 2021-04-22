@@ -105,7 +105,7 @@ class DDPG(object):
         saver = tf.train.Saver()
         saver.restore(self.sess, './params')
 
-    def choose_action(self):
-
+    def choose_action(self, s):
+        return self.sess.run(self.a, {self.S: s})[0]
 
     def learn(self):
