@@ -109,3 +109,10 @@ class DDPG(object):
         return self.sess.run(self.a, {self.S: s})[0]
 
     def learn(self):
+        # soft target replacement
+        self.sess.run(self.soft_replace)
+
+        bs, ba, br, bs_, dones = self.sample_buffer(BATCH_SIZE)
+
+        self.sess.run(self.atrain, {self.S: bs})
+        self.sess.run(self.ctrain, {self.S: bs, self.a: ba, self.R: br, self.S_: bs_})
