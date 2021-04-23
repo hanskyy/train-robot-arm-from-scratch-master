@@ -2,6 +2,7 @@ from ddpgrl import DDPG
 import numpy as np
 import gym
 import subprocess
+import matplotlib.pyplot as plt
 from PIL import Image
 
 ON_TRAIN = False
@@ -83,10 +84,12 @@ def eval():
         next_state, reward, done, info = env.step(action)
         next_obs, next_curr_pos, goal_pos = next_state.values()
 
-        env.render()
-        img = env.render(mode="rgb_array")
+        #img = env.render(height=480, width=480)
+        image_data = env.render(mode="rgb_array")
+        # plt.imshow(img)
+        # plt.show()
         # image_data = env.render(height=480, width=480,camera_id=-1)
-        # img = Image.fromarray(image_data, 'RGB')
+        img = Image.fromarray(image_data, 'RGB')
         img.save("frames/frame-%.10d.png" % time_step_counter)
         time_step_counter += 1
         curr_pos = next_curr_pos
