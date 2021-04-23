@@ -1,4 +1,4 @@
-from ddpg-rl import DDPG
+from ddpgrl import DDPG
 import numpy as np
 import gym
 
@@ -66,14 +66,14 @@ def train():
                 break
     rl.save()
 
-
-def eval():
-
+#
+# def eval():
+#
 
 
 
 
 if ON_TRAIN:
     train()
-else:
-    eval()
+# else:
+    # eval()

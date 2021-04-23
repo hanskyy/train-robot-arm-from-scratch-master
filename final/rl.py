@@ -54,7 +54,7 @@ class DDPG(object):
         self.sess.run(tf.global_variables_initializer())
 
     def choose_action(self, s):
-        return self.sess.run(self.a, {self.S: s})[0]
+        return self.sess.run(self.a, {self.S: s[None, :]})[0]
 
     def learn(self):
         # soft target replacement
@@ -71,16 +71,17 @@ class DDPG(object):
         self.sess.run(self.ctrain, {self.S: bs, self.a: ba, self.R: br, self.S_: bs_})
 
     def store_transition(self, s, a, r, s_):
-        #ob_1 = np.reshape(s['observation'], (1, 10))
-        ob_1 = np.reshape(s['observation'], (1, -1))
-        ac_1 = np.reshape(s['achieved_goal'], (1, 3))
-        de_1 = np.reshape(s['desired_goal'], (1, 3))
-        ob_2 = np.reshape(s_['observation'], (1, 10))
-        ac_2 = np.reshape(s_['achieved_goal'], (1, 3))
-        de_2 = np.reshape(s_['desired_goal'], (1, 3))
-        s_2 = np.concatenate([ob_1, de_1], axis=1)
-        s2_2 = np.concatenate([ob_2, de_1], axis=1)
-        transition = np.hstack((s_2, a, [r], s2_2))
+        # #ob_1 = np.reshape(s['observation'], (1, 10))
+        # ob_1 = np.reshape(s['observation'], (1, -1))
+        # ac_1 = np.reshape(s['achieved_goal'], (1, 3))
+        # de_1 = np.reshape(s['desired_goal'], (1, 3))
+        # ob_2 = np.reshape(s_['observation'], (1, 10))
+        # ac_2 = np.reshape(s_['achieved_goal'], (1, 3))
+        # de_2 = np.reshape(s_['desired_goal'], (1, 3))
+        # s_2 = np.concatenate([ob_1, de_1], axis=1)
+        # s2_2 = np.concatenate([ob_2, de_1], axis=1)
+        # transition = np.hstack((s_2, a, [r], s2_2))
+        transition = np.hstack((s, a, [r], s_))
         index = self.pointer % MEMORY_CAPACITY  # replace the old memory with new memory
         self.memory[index, :] = transition
         self.pointer += 1

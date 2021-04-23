@@ -8,7 +8,7 @@ LR_C = 0.001    # learning rate for critic
 GAMMA = 0.9     # reward discount
 TAU = 0.01      # soft replacement
 MEMORY_CAPACITY = 10000
-BATCH_SIZE = 32
+BATCH_SIZE = None
 
 class DDPG(object):
     def __init__(self, input_dims, env=None, n_actions=4):
@@ -71,6 +71,7 @@ class DDPG(object):
         self.mem_cntr +=1
         if self.mem_cntr > MEMORY_CAPACITY:
             self.memory_full = True
+            print("memory_full")
 
     def sample_buffer(self, batch_size):
         max_mem = min(self.mem_cntr, self.mem_size)
@@ -106,7 +107,7 @@ class DDPG(object):
         saver.restore(self.sess, './params')
 
     def choose_action(self, s):
-        return self.sess.run(self.a, {self.S: s})[0]
+        return self.sess.run(self.a, {self.S: s[None, :]})[0]
 
     def learn(self):
         # soft target replacement
