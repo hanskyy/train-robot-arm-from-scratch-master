@@ -25,7 +25,7 @@ torch.backends.cudnn.enabled = True
 torch.backends.cudnn.benchmark = True
 toTensor = torch.Tensor
 FloatTensor = torch.FloatTensor
-
+print("hi")
 Na = env.action_space.shape[0]
 A_MAX = env.action_space.high[0]
 Ns = env.observation_space.shape[0]
