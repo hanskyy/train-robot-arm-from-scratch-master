@@ -1,8 +1,11 @@
 from ddpgrl import DDPG
 import numpy as np
 import gym
+import subprocess
+from PIL import Image
 
-ON_TRAIN = True
+ON_TRAIN = False
+
 
 # set env as Fetch and set dim
 env = gym.make('FetchReach-v1')
@@ -28,7 +31,7 @@ min_action = env.action_space.low[0]
 # next_curr_pos_log = []
 rl = DDPG(input_dims=s_dim, env=env, n_actions=a_dim)
 
-MAX_EPISODES = 5000
+MAX_EPISODES = 20000
 MAX_EP_STEPS = 200
 
 def train():
@@ -66,14 +69,36 @@ def train():
                 break
     rl.save()
 
-#
-# def eval():
-#
 
+def eval():
+    rl.restore()
+    state = env.reset().values()
+    obs, curr_pos, goal_pos = state
+    subprocess.call(['rm', '-rf', 'frames'])
+    subprocess.call(['mkdir', '-p', 'frames'])
+    time_step_counter = 0
+    while True:
+        #env.render()
+        action = rl.choose_action(np.concatenate((obs, curr_pos, goal_pos)))
+        next_state, reward, done, info = env.step(action)
+        next_obs, next_curr_pos, goal_pos = next_state.values()
 
-
+        env.render()
+        img = env.render(mode="rgb_array")
+        # image_data = env.render(height=480, width=480,camera_id=-1)
+        # img = Image.fromarray(image_data, 'RGB')
+        img.save("frames/frame-%.10d.png" % time_step_counter)
+        time_step_counter += 1
+        curr_pos = next_curr_pos
+        obs = next_obs
+        if done:
+            break
+    subprocess.call([
+        'ffmpeg', '-framerate', '50', '-y', '-i', 'frames/frame-%010d.png', '-r', '30', '-pix_fmt', 'yuv420p',
+        'video_name.mp4'
+    ])
 
 if ON_TRAIN:
     train()
-# else:
-    # eval()
+else:
+    eval()

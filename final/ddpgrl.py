@@ -8,7 +8,7 @@ LR_C = 0.001    # learning rate for critic
 GAMMA = 0.9     # reward discount
 TAU = 0.01      # soft replacement
 MEMORY_CAPACITY = 10000
-BATCH_SIZE = None
+BATCH_SIZE = 32
 
 class DDPG(object):
     def __init__(self, input_dims, env=None, n_actions=4):
@@ -71,7 +71,7 @@ class DDPG(object):
         self.mem_cntr +=1
         if self.mem_cntr > MEMORY_CAPACITY:
             self.memory_full = True
-            print("memory_full")
+            # print("memory_full")
 
     def sample_buffer(self, batch_size):
         max_mem = min(self.mem_cntr, self.mem_size)
@@ -80,6 +80,7 @@ class DDPG(object):
         _states = self.new_state_memory[batch]
         actions = self.action_memory[batch]
         rewards = self.reward_memory[batch]
+        rewards = np.expand_dims(rewards, axis=1)
         dones = self.terminal_memory[batch]
         return states, actions, rewards, _states, dones
 
