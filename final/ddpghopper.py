@@ -9,7 +9,12 @@ ON_TRAIN = True
 
 
 # set env as Fetch and set dim
-env = gym.make('FetchReach-v1')
+env = gym.make('Hopper-v2')
+
+print(env.action_space.high[0])
+print(env.action_space)		#3
+print(env.observation_space)	#11
+
 desiredgoal_shape = env.observation_space['desired_goal'].shape[0]    #desired_goal is 3
 achievedgoal_shape = env.observation_space['achieved_goal'].shape[0]   # 3
 observation_shape = env.observation_space['observation'].shape[0]      # 10
