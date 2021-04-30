@@ -9,7 +9,7 @@ ON_TRAIN = True
 
 
 # set env as Fetch and set dim
-env = gym.make('Swimmer-v2')
+env = gym.make('Reacher-v2')
 
 # print(env.action_space.high[0])
 # print(env.action_space)		#3
