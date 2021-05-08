@@ -5,7 +5,7 @@ import subprocess
 import matplotlib.pyplot as plt
 from PIL import Image
 
-ON_TRAIN = True
+ON_TRAIN = False
 
 
 # set env as Fetch and set dim
@@ -36,7 +36,7 @@ a_bound = env.action_space.high[0]
 rl = DDPG(input_dims=s_dim, env=env, n_actions=a_dim)
 
 MAX_EPISODES = 1000
-MAX_EP_STEPS = 500
+MAX_EP_STEPS = 300
 
 def train():
     # start training
