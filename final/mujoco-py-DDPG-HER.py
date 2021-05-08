@@ -6,7 +6,7 @@ import mujoco_py
 import tensorflow as tf
 import tensorflow.contrib as tc
 from collections import deque
-env = gym.make('FetchReach-v1')
+env = gym.make('FetchReach-v2')
 action_size = 4
 state_size = 13
 action_bound = env.action_space.high

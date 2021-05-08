@@ -13,7 +13,7 @@ import tensorflow.contrib as tc
 from collections import deque
 import sys
 print(sys.path)
-MAX_EPISODES = 900
+MAX_EPISODES = 800
 MAX_EP_STEPS = 200
 ON_TRAIN = True
 
