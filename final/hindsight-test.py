@@ -72,6 +72,7 @@ class DQN(object):
         self.gamma = gamma
         self.epsilon = epsilon
         self.tau = tau
+        self.sess = tf.Session()
 
         self.OBS0 = tf.placeholder(tf.float32, [None, self.obs_dim], name="observations0")
         self.OBS1 = tf.placeholder(tf.float32, [None, self.obs_dim], name="observations1")
@@ -95,14 +96,16 @@ class DQN(object):
         q_value_loss = tf.reduce_mean(tf.square(self.q_value_onehot - self.TARGET_Q))
         self.q_value_train_op = tf.train.AdamOptimizer(learning_rate=self.lr_q_value).minimize(q_value_loss)
 
-        self.q_value_params = tf.global_variables('q_value')
-        self.target_q_value_params = tf.global_variables('target_q_value')
+        self.q_value_params = tf.get_collection(tf.GraphKeys.GLOBAL_VARIABLES, scope='q_value')
+        self.target_q_value_params = tf.get_collection(tf.GraphKeys.GLOBAL_VARIABLES, scope='target_q_value')
+        # self.q_value_params = tf.global_variables('q_value')
+        # self.target_q_value_params = tf.global_variables('target_q_value')
         self.target_init_updates = [tf.assign(tq, q) for tq, q in zip(self.target_q_value_params, self.q_value_params)]
         self.target_soft_updates = \
             [tf.assign(tq, (1 - tau) * tq + tau * q)
              for tq, q in zip(self.target_q_value_params, self.q_value_params)]
 
-        self.sess = tf.Session()
+
         self.sess.run(tf.global_variables_initializer())
         self.sess.run(self.target_init_updates)
 
