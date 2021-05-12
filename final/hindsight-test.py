@@ -135,7 +135,7 @@ agent = DQN(act_dim=bit_size, obs_dim=bit_size*2,
             lr_q_value=0.001, gamma=0.98, epsilon=0.0, tau=0.05)
 
 nepochs = 10
-ncycles = 50
+ncycles = 51
 nepisode = 16
 nstep = bit_size
 noptstep = 40
