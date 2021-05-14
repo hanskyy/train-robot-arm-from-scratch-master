@@ -109,7 +109,7 @@ class DQN(object):
         self.sess.run(tf.global_variables_initializer())
         self.sess.run(self.target_init_updates)
 
-    def step(self, obs):
+    def choose_action(self, obs):        # choose action function
         if obs.ndim < 2: obs = obs[np.newaxis, :]
         action = self.sess.run(self.q_value0, feed_dict={self.OBS0: obs})
         if np.random.rand(1) < self.epsilon:
@@ -141,7 +141,7 @@ nstep = bit_size
 noptstep = 40
 
 HER = True
-future_k = 5  # usually 4
+future_k = 4  # usually 4
 
 for i in range(nepochs) :
     for j in range(ncycles) :
@@ -153,7 +153,7 @@ for i in range(nepochs) :
 
             for t in range(nstep):
                 conc_s = np.concatenate([obs0,goal], axis = -1)
-                act = agent.step(conc_s)
+                act = agent.choose_action(conc_s)
 
                 obs1, rwd, done = env.step(act)
                 episode_experience.append((obs0, act, rwd, obs1, goal, done))
