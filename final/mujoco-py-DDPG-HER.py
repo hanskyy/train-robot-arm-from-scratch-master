@@ -196,8 +196,8 @@ def store_sample(s,a,r,d,info ,s2):
     substitute_goal = s['achieved_goal'].copy()
     substitute_reward = env.compute_reward(s['achieved_goal'], substitute_goal, info)
 
-    replay_memory.append((s_2,a,r,d,s2_2))
-    replay_memory.append((s_1,a,substitute_reward,True,s2_1))
+    replay_memory.append((s_2,a,r,d,s2_2))  # obs, action, reward, done, obs_next
+    replay_memory.append((s_1,a,substitute_reward,True,s2_1)) # newgoal_obs, action,substitute_reward, true, newgoal_nextobs
 
 def stg(s):
     #print(len(s))
