@@ -192,7 +192,7 @@ def store_sample(s,a,r,d,info ,s2):
     s_1 = np.concatenate([ob_1,ac_1],axis=1)
     s2_1 = np.concatenate([ob_2,ac_1],axis=1)
     s_2 = np.concatenate([ob_1,de_1],axis=1)
-    s2_2 = np.concatenate([ob_2,de_1],axis=1)
+    s2_2 = np.concatenate([ob_2,de_2],axis=1)
     substitute_goal = s['achieved_goal'].copy()
     substitute_reward = env.compute_reward(s['achieved_goal'], substitute_goal, info)
 
