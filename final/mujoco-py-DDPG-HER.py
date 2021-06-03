@@ -10,7 +10,7 @@ env = gym.make('FetchReach-v2')
 action_size = 4
 state_size = 13
 action_bound = env.action_space.high
-batch_size = 128
+batch_size = 64
 import random
 import matplotlib.pyplot as plt
 ###################seeding###################
