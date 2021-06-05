@@ -140,7 +140,7 @@ nepisode = 16
 nstep = bit_size
 noptstep = 40
 
-HER = True
+HER = False
 future_k = 4  # usually 4
 
 for i in range(nepochs) :
