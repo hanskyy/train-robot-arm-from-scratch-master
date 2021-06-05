@@ -141,7 +141,7 @@ nstep = bit_size
 noptstep = 40
 
 HER = True
-future_k = 8  # usually 4
+future_k = 4  # usually 4
 
 for i in range(nepochs) :
     for j in range(ncycles) :
