@@ -5,7 +5,7 @@ import subprocess
 import matplotlib.pyplot as plt
 from PIL import Image
 
-ON_TRAIN = False
+ON_TRAIN = True
 
 
 # set env as Fetch and set dim
